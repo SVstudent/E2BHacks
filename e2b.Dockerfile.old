@@ -1,0 +1,19 @@
+# E2B Dockerfile for ChaosAgent with MCP Support
+# Based on E2B base image with Node.js and MCP gateway
+
+FROM e2bdev/base:latest
+
+# Install Node.js 22 (LTS)
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
+    apt-get install -y nodejs && \
+    node --version && \
+    npm --version
+
+# Set working directory
+WORKDIR /workspace
+
+# Install common npm packages that might be needed
+RUN npm install -g typescript tsx
+
+# The MCP gateway is already included in e2bdev/base
+# It will be automatically configured when the sandbox starts

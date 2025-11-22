@@ -1,0 +1,19 @@
+# .gitignore
+node_modules/
+dist/
+.env
+*.log
+.DS_Store
+
+# Next.js
+.next/
+dashboard/.next/
+*.next/
+
+# Build outputs
+dashboard/out/
+dashboard/build/
+
+# Test results
+chaos-results.json
+test-scenarios.json

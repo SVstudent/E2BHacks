@@ -1,0 +1,27 @@
+# E2B Template Configuration (v1)
+# This creates a custom sandbox template with MCP (Model Context Protocol) support
+
+# Root-level fields for E2B v1
+template_id = "chaosagent-mcp"
+template_name = "chaosagent-mcp"
+description = "ChaosAgent.AI sandbox with MCP gateway for Browserbase, Exa, and GitHub tools"
+dockerfile = "e2b.Dockerfile"
+
+# Enable MCP gateway with Docker MCP Hub
+[mcp]
+enabled = true
+
+# Browserbase MCP Server - Browser automation
+[mcp.browserbase]
+image = "mcp/browserbase@sha256:f407211aa1b2f22cb504045468a7657af7eb174f7294ad3826e15383ee356599"
+env = ["BROWSERBASE_API_KEY", "BROWSERBASE_PROJECT_ID", "GEMINI_API_KEY"]
+
+# Exa MCP Server - AI-powered web search
+[mcp.exa]
+image = "mcp/exa@sha256:61f88e24df5bc379133f97feb7d5865c2531c56759c8a34f8cd88e02bf33867d"
+env = ["EXA_API_KEY"]
+
+# GitHub MCP Server - GitHub API access
+[mcp.github]
+image = "ghcr.io/github/github-mcp-server@sha256:1511d5f21f9ec5e013346ebd736c783fe4079cada16cbb87df0c9ce386ea0844"
+env = ["GITHUB_PERSONAL_ACCESS_TOKEN"]
