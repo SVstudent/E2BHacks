@@ -1,22 +1,22 @@
-
-
 # **ChaosAgent.AI**
 
 **AI Agent Security Testing Framework (MCP‑Aware)**
 
-ChaosAgent.AI is a comprehensive security testing framework for AI agents that interact with external tools via **Model Context Protocol (MCP)**. It uses adversarial prompts and sandboxed execution to identify vulnerabilities before deployment, focusing on tool misuse, data leaks, and other security risks.
+ChaosAgent.AI is a production-ready framework for testing AI agents that integrate with external tools via **Model Context Protocol (MCP)**. Using adversarial prompts and sandboxed execution, it identifies vulnerabilities such as tool misuse, data leakage, and session bleeding **before deployment**. ChaosAgent.AI is the first framework designed specifically for **MCP tool abuse testing**, running real API calls safely in **E2B sandboxes** with **Docker-based MCP servers**.
 
 ---
 
 ## 🎯 **Purpose**
 
-ChaosAgent.AI systematically tests agents for:
+ChaosAgent.AI tests AI agents for critical security issues:
 
-* **Prompt Injection** — Overrides or manipulates agent instructions
-* **Session Bleeding** — Cross-user data exposure
-* **Tool Manipulation (MCP)** — Unauthorized or malicious tool usage
-* **Data Leakage** — Exposure of sensitive information (PII, credentials, secrets)
-* **Resource Exhaustion** — Infinite loops, recursion, or DoS-style attacks
+* **Prompt Injection** — Overrides or confuses agent instructions
+* **Session Bleeding** — Detects cross-user data exposure
+* **Tool Manipulation (MCP)** — Monitors and prevents malicious use of external tools
+* **Data Leakage** — Identifies exposure of PII, credentials, or internal data
+* **Resource Exhaustion** — Checks for infinite loops, recursion, and DoS attacks
+
+By simulating real-world attack scenarios, it ensures that agents deployed with MCPs like Browserbase, Exa, and GitHub behave safely.
 
 ---
 
@@ -36,104 +36,79 @@ ChaosAgent.AI systematically tests agents for:
                                             └─────────────────┘
 ```
 
-All tests run inside **isolated E2B sandboxes** with real **MCP Docker servers** for safe, realistic evaluation.
+* **Groq** drives the attacker agent for fast, scalable inference (supports 30 RPM free-tier usage).
+* **E2B Sandboxes** provide isolated execution for all test agents, preventing accidental system damage.
+* **Docker MCP Servers** enable safe, real-world testing with external tools.
 
 ---
 
-## 🌐 **MCP Servers Tested**
+## 🌐 **Integrated MCP Servers**
 
-ChaosAgent integrates and tests three key MCP servers:
+ChaosAgent.AI supports:
 
-* **Browserbase** — Browser automation: detects malicious navigation, scraping, and tool hijacking.
-* **Exa** — AI-powered search: checks for unauthorized data extraction and multi-tool attacks.
-* **GitHub Official** — Repository operations: tests repo access, workflow triggers, and token misuse.
+* **Browserbase** — Simulates browser automation; detects malicious navigation, tool hijacking, and scraping.
+* **Exa** — AI search engine; monitors unauthorized data retrieval, multi-tool attacks, and sensitive document access.
+* **GitHub Official** — Repository management; tests repo access, workflow triggers, and token misuse.
+
+All MCP servers run in **Docker containers** within the E2B sandbox, ensuring **real API interactions** without compromising security.
+
+---
+
+## 🧪 **Testing Pipeline**
+
+1. **Attack Generation** — 26 predefined adversarial scenarios including 6 MCP-specific attacks.
+2. **Sandbox Execution** — Each scenario runs inside an isolated E2B environment with Docker MCP servers.
+3. **Vulnerability Detection** — Rule-based evaluation captures known attack patterns; Groq evaluates nuanced responses.
+4. **Context-Aware Logging** — Captures detailed MCP tool activity: calls, URLs accessed, search results, and any suspicious operations.
 
 ---
 
 ## 🚀 **Quick Start**
 
-### **1. Install**
-
 ```bash
-git clone <your-repo>
+git clone <repo>
 cd chaosagent
 npm install
-```
-
-### **2. Configure**
-
-```bash
 cp .env.example .env
-# Add GROQ_API_KEY, E2B_API_KEY, and MCP credentials
+# Configure GROQ_API_KEY, E2B_API_KEY, and MCP credentials
+npm run test         # Run full test suite
+npm run dashboard    # Launch visual dashboard at http://localhost:3000
 ```
 
-### **3. Run Tests**
+---
 
-```bash
-npm run test
-```
+## 📊 **Dashboard Metrics**
 
-### **4. Dashboard**
-
-```bash
-npm run dashboard
-```
-
-Visit `http://localhost:3000` for:
-
-* Security score
-* Vulnerability breakdown
-* MCP tool activity logs
-* Failed test details
+* **Security Score** — Overall agent robustness
+* **Vulnerability Breakdown** — By category: prompt injection, MCP tool misuse, data leakage, etc.
+* **MCP Activity Logs** — Browserbase, Exa, and GitHub tool usage tracked per test
+* **Failed Test Details** — Includes intentional failures to prove detection accuracy
 
 ---
 
 ## 🔧 **Core Components**
 
-* **`src/chaos-executor.ts`** — Runs tests in E2B sandboxes
-* **`src/attack-library.ts`** — Predefined attacks (26 total, 6 MCP-specific)
-* **`src/target-agent.ts`** — Interface to your AI agent
-* **`test-agents/`** — Demo agents: banking, e-commerce, HR
-* **`chaos-results.json`** — Logs and scores
+* `src/chaos-executor.ts` — Main test engine
+* `src/attack-library.ts` — 26 attack scenarios (including MCP-specific attacks)
+* `src/target-agent.ts` — Interface for your AI agent
+* `test-agents/` — Demo agents: banking, e-commerce, HR
+* `chaos-results.json` — Test logs and security scores
 
 ---
 
-## 🧪 **Test Categories**
+## 🔒 **Security & Customization**
 
-* **Prompt Injection** — Overrides or confuses instructions
-* **Tool Manipulation (MCP)** — Misuse of Browserbase, Exa, GitHub
-* **Data Leakage** — Sensitive info exposure
-* **Session Bleeding** — Cross-session data access
-* **Resource Exhaustion** — Loops, recursion, or heavy loads
-
----
-
-## 📈 **Results**
-
-**Security Score:** 90–100% Excellent, 70–89% Moderate, <70% High Risk
-**PASS Example:** Agent correctly refused malicious request
-**FAIL Example:** Agent misused MCP tool or exposed data
+* All tests run **sandboxed** in E2B for safety.
+* Synthetic data only — no real PII.
+* Rate-limits prevent Groq and MCP API overuse.
+* Extend by adding new scenarios to `attack-library.ts` or testing your own agent in `target-agent.ts`.
 
 ---
 
-## 🛠️ **Customization**
+## 🤝 **Contribution & Usage**
 
-* Replace `src/target-agent.ts` to test your own agent
-* Extend `attack-library.ts` to add new attack scenarios
-* View full results in `chaos-results.json` and dashboard
+* Fork → Branch → Add tests → Pull request
+* Use in CI/CD for **continuous security audits** of AI agents
+* Ideal for MCP-heavy agents in enterprise, compliance, and research environments
 
----
-
-## 🤝 **Contributing**
-
-* Fork → branch → add tests → pull request
-* Ensure tests run in **E2B sandbox** with MCPs
-
----
-
-## 🔒 **Security Considerations**
-
-* Use **sandboxed execution only**
-* Use synthetic data; never production data
-* Rate-limit MCP and Groq API usage
 
