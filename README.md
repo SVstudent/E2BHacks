@@ -258,3 +258,4 @@ export async function runTargetAgent(input) {
 Use ChaosAgent.AI ethically. Only test systems you own or are authorized to assess.
 
 ---
+DEVELOPED BY SATHVIK VEMPATI --> vempati.honey@gmail.com
