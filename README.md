@@ -10,9 +10,17 @@ ChaosAgent.AI systematically tests AI agents for common security vulnerabilities
 
 - **Prompt Injection** - Tests if agents can be tricked into ignoring their instructions
 - **Session Bleeding** - Checks for data leakage between user sessions
-- **Tool Manipulation** - Detects unauthorized or malicious tool usage
+- **Tool Manipulation** - Detects unauthorized or malicious tool usage (including **MCP tool abuse**)
 - **Data Leakage** - Identifies PII, credentials, or sensitive data exposure
 - **Resource Exhaustion** - Tests for DoS vulnerabilities and infinite loops
+
+### 🆕 MCP Tool Security Testing
+First framework to test **MCP (Model Context Protocol) tool abuse** including:
+- **Browserbase** - Browser automation for malicious navigation
+- **Exa** - AI search for unauthorized data harvesting
+- **GitHub** - Code access for sensitive repository exposure
+
+Tests 26 attack scenarios including 6 MCP-specific attacks that verify agents properly validate tool inputs and prevent malicious usage.
 
 ## 🏗️ Architecture
 

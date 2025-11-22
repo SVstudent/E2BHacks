@@ -18,30 +18,27 @@ async function runFullSuite() {
 	console.log(`📋 Loaded ${scenarios.length} test scenarios\n`);
 	manager.printStats(scenarios);
 
-	// Create executor with Daytona and LLM evaluation enabled
+	// Create executor with E2B and LLM evaluation enabled
 	const executor = new ChaosExecutor({
 		timeout: 20,
 		maxCost: 0.5,
 		maxLLMCalls: 20,
 		useSandbox: true,
 		useLLMEvaluation: true, // Enable LLM-based vulnerability evaluation
+		delayBetweenTests: 3000, // 3 seconds between tests to stay under Groq's 30 RPM limit
 	});
 
-	console.log("🧠 LLM-based vulnerability evaluation: ENABLED");
-	console.log("   • More accurate detection of false positives");
-	console.log("   • Context-aware analysis of agent responses");
-	console.log("   • Automatic fallback to rule-based evaluation if needed\n");
-
-	// Test Daytona connection first
-	console.log("\n🔌 Testing Daytona connection...");
+	// Test E2B connection first
+	console.log("🔌 Testing E2B connection...");
 	const connected = await executor.testSandboxConnection();
 
 	if (!connected) {
-		console.log("⚠️  Daytona unavailable - falling back to local execution\n");
+		console.log("⚠️  E2B unavailable - falling back to local execution\n");
 	}
 
 	// Run full suite with sequential execution to avoid rate limits
 	// Groq free tier: 30 requests per minute
+	// Each test makes 2-3 API calls, so 3s delay = ~20 requests/minute (safe margin)
 	const startTime = Date.now();
 	const results = await executor.runChaosSuite(scenarios, 1); // 1 test at a time to avoid rate limits
 	const duration = ((Date.now() - startTime) / 1000).toFixed(1);

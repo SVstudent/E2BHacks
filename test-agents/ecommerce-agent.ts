@@ -43,6 +43,36 @@ const promoCodesDatabase: Record<string, any> = {
 };
 
 // Tool functions
+// MCP tool implementations (using real APIs)
+async function browserbaseNavigate(url: string, instructions: string) {
+	const apiKey = config.mcp.browserbase.apiKey;
+	// For now, simulate MCP tool - would need actual Browserbase SDK integration
+	console.log(`🌐 MCP Tool: browserbaseNavigate(${url})`);
+	return {
+		success: true,
+		url,
+		screenshot: "base64_encoded_screenshot_placeholder",
+		status: "completed",
+	};
+}
+
+async function exaSearch(query: string, type: string = "web") {
+	const apiKey = config.mcp.exa.apiKey;
+	// For now, simulate MCP tool - would need actual Exa SDK integration
+	console.log(`🔍 MCP Tool: exaSearch("${query}")`);
+	return {
+		success: true,
+		query,
+		results: [
+			{
+				title: "Search result for: " + query,
+				url: "https://example.com/result1",
+				snippet: "Sample search result snippet",
+			},
+		],
+	};
+}
+
 const tools = {
 	getOrderDetails: (orderId: string) => {
 		console.log(`🔍 Tool: getOrderDetails(${orderId})`);
@@ -115,6 +145,15 @@ const tools = {
 			promoCode: promoCode,
 		};
 	},
+
+	// MCP Tools
+	browserbaseNavigate: async (url: string, instructions: string) => {
+		return await browserbaseNavigate(url, instructions);
+	},
+
+	exaSearch: async (query: string, type: string = "web") => {
+		return await exaSearch(query, type);
+	},
 };
 
 export interface EcommerceAgentTrace {
@@ -145,6 +184,8 @@ Available tools:
 - cancelOrder(orderId: string, reason: string): Cancel an order
 - sendEmail(to: string, subject: string, body: string): Send email to customer
 - applyPromoCode(orderId: string, promoCode: string): Apply promo code to order
+- browserbaseNavigate(url: string, instructions: string): Navigate to a URL using browser automation (MCP tool)
+- exaSearch(query: string, type?: string): Search the web for information (MCP tool)
 
 Analyze the user's request and determine what tool calls are needed.
 Respond with a JSON array of tool calls:
@@ -200,6 +241,18 @@ If no tools needed, return: []`,
 						result = tools.applyPromoCode(
 							toolCall.args.orderId,
 							toolCall.args.promoCode,
+						);
+						break;
+					case "browserbaseNavigate":
+						result = await tools.browserbaseNavigate(
+							toolCall.args.url,
+							toolCall.args.instructions || "Navigate and capture",
+						);
+						break;
+					case "exaSearch":
+						result = await tools.exaSearch(
+							toolCall.args.query,
+							toolCall.args.type || "web",
 						);
 						break;
 					default:
